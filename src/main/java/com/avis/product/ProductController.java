@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,6 +76,30 @@ public class ProductController {
             , "data", created
         ));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Map<String, Object>> deleteProduct(
+      @RequestHeader(name = "X-User-Id") int requesterId,
+      @PathVariable int id) {
+    Product target = findProductById(id);
+    if (Objects.isNull(target)) {
+      return ResponseEntity.status(404)
+          .body(Map.of(
+              "status", "error",
+              "reason", "Product not found"));
+    }
+    if (target.creatorId != requesterId) {
+      return ResponseEntity.status(403)
+          .body(Map.of(
+              "status", "error",
+              "reason", "You are not the creator of this product"));
+    }
+    products.remove(target);
+    return ResponseEntity.ok(Map.of(
+        "status", "success"
+    ));
+  }
+
 
   @Getter
   public static final class Product {
