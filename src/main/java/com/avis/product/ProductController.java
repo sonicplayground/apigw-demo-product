@@ -60,7 +60,7 @@ public class ProductController {
    */
   @PostMapping
   public ResponseEntity<Map<String, Object>> createProduct(
-      @RequestHeader(name = "Passport-Id") int creatorId,
+      @RequestHeader(name = "X-User-Id") int creatorId,
       @RequestBody Map<String, String> body) {
     int id = products.size() + 1;
     String name = body.get("name");
