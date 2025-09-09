@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,9 +23,9 @@ public class ProductController {
 
   @PostConstruct
   public void init() {
-    products.add(new Product(1, "Product 1", 1000));
-    products.add(new Product(2, "Product 2", 2000));
-    products.add(new Product(3, "Product 3", 3000));
+    products.add(new Product(1, "Product 1", 1000, 1));
+    products.add(new Product(2, "Product 2", 2000, 1));
+    products.add(new Product(3, "Product 3", 3000, 1));
   }
 
   @RequestMapping
@@ -58,12 +59,14 @@ public class ProductController {
    * @return Created product with id
    */
   @PostMapping
-  public ResponseEntity<Map<String, Object>> createProduct(@RequestBody Map<String, String> body) {
+  public ResponseEntity<Map<String, Object>> createProduct(
+      @RequestHeader(name = "Passport-Id") int creatorId,
+      @RequestBody Map<String, String> body) {
     int id = products.size() + 1;
     String name = body.get("name");
     int price = Integer.parseInt(body.get("price"));
 
-    Product created = new Product(id, name, price);
+    Product created = new Product(id, name, price, creatorId);
     products.add(created);
 
     return ResponseEntity.status(201)
@@ -79,11 +82,13 @@ public class ProductController {
     int id;
     String name;
     int price;
+    int creatorId;
 
-    Product(int id, String name, int price) {
+    Product(int id, String name, int price, int creatorId) {
       this.id = id;
       this.name = name;
       this.price = price;
+      this.creatorId = creatorId;
     }
   }
 }
