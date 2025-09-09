@@ -17,19 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/products")
 public class ProductController {
 
-  @Getter
-  public static final class Product {
-    int id;
-    String name;
-    int price;
-
-    Product(int id, String name, int price) {
-      this.id = id;
-      this.name = name;
-      this.price = price;
-    }
-  }
-
   // sample test data
   List<Product> products = new ArrayList<>();
 
@@ -84,5 +71,19 @@ public class ProductController {
             "status", "success"
             , "data", created
         ));
+  }
+
+  @Getter
+  public static final class Product {
+
+    int id;
+    String name;
+    int price;
+
+    Product(int id, String name, int price) {
+      this.id = id;
+      this.name = name;
+      this.price = price;
+    }
   }
 }
